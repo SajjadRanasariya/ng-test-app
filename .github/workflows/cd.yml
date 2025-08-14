@@ -24,7 +24,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ng-test-app-build
+          name: angular-build
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
@@ -32,7 +32,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+
+      # Fix esbuild permissions
+      - name: Fix esbuild permissions
+        run: |
+          find node_modules/@esbuild -name "esbuild" -type f -exec chmod +x {} \;
+          find node_modules/esbuild/bin -name "esbuild" -type f -exec chmod +x {} \; 2>/dev/null || true
 
       - name: Install Angular CLI globally
         run: npm install -g @angular/cli
@@ -47,5 +52,3 @@ jobs:
         run: ng deploy --base-href=https://sajjadranasariya.github.io/ng-test-app/
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
