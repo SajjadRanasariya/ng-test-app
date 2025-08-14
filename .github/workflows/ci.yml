@@ -1,9 +1,7 @@
-name: Angular CI/CD Pipeline
+name: CI - Continuous Integration
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:

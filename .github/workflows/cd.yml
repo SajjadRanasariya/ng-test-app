@@ -1,0 +1,38 @@
+name: CD - Continuous Deployment
+
+on:
+  workflow_run:
+    workflows: [ CI - Continuous Integration ]
+    types:
+      - completed
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: action/setup-node@v4
+        with:
+          node-verion: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        uses: npm ci
+
+      - name: Build application
+        run: npm build -- --configuration=production --base-href="/ng-test-app/"
+
+      - name: Deploy on Github Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dis/ng-test-app
+
+
+
