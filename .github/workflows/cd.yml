@@ -49,6 +49,6 @@ jobs:
           fi
 
       - name: Deploy to GitHub Pages
-        run: ng deploy --base-href=https://sajjadranasariya.github.io/ng-test-app/
+        run: ng deploy --base-href=https://SajjadRanasariya.github.io/ng-test-app/
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
