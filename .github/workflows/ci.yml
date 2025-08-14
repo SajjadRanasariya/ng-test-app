@@ -25,5 +25,16 @@ jobs:
         run: npm test -- --no-watch --no-progress --browsers=ChromeHeadless
 
       - name: Build application
-        run: npm run build
+        run: npm run build -- --configuration=production --base-href="/ng-test-app/"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ng-test-app-build
+          path: |
+            dist/
+            node_modules/
+            package.json
+            angular.json
+          retention-days: 1
 

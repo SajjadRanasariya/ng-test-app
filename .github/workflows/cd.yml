@@ -21,26 +21,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ng-test-app-build
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install Angular CLI globally
+        run: npm install -g @angular/cli
 
-      - name: Build application
-        run: npm run build -- --configuration=production --base-href /ng-test-app/
+      - name: Add Angular CLI GitHub Pages
+        run: |
+          if [ ! -f "angular.json" ] || ! grep -q "angular-cli-ghpages" angular.json; then
+            ng add angular-cli-ghpages --skip-confirmation
+          fi
 
-      - name: Copy index.html to 404.html for SPA
-        run: cp dist/ng-test-app/index.html dist/ng-test-app/404.html
-
-      - name: Deploy on Github Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/ng-test-app
-
+      - name: Deploy to GitHub Pages
+        run: ng deploy --base-href=https://sajjadranasariya.github.io/ng-test-app/
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
