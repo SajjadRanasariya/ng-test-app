@@ -23,7 +23,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        uses: npm ci
+        run: npm ci
 
       - name: Build application
         run: npm run build -- --configuration=production --base-href="/ng-test-app/"
